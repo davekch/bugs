@@ -1,0 +1,64 @@
+{% extends 'bugs/base.html' %}
+
+{% block customstatic %}
+	{% load static %}
+	<script src="{% static 'bugs/js/util.js' %}"></script>
+{% endblock %}
+
+{% block title %}| {{projectname}}{% endblock %}
+
+{% block content %}
+
+<h1>{{projectname}}</h1>
+<small><a href="{% url 'projects' %}">&larr;back to projects</a> </small>
+<hr>
+<h2>Issues</h2>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td><b>Title</b></td>
+			<td><b>Priority</b></td>
+			<td><b>Tags</b></td>
+			<td><b>Status</b></td>
+		</tr>
+	</thead>
+	<tbody id="issues-tablebody">
+		{% for issue in issues %}
+			<tr>
+				<td>
+					<a href="{% url 'issuedetails' projectname issue.pk %}">{{issue.title}}</a>
+				</td>
+				<td>{{issue.priority}}</td>
+				<td>
+					{% for tag in issue.tags_list %}
+						<span class="badge badge-info">{{tag}}</span>
+					{% endfor %}
+				</td>
+				<td>
+					<div class="dropdown">
+						<button class="btn btn-sm dropdown-toggle" type="button" id="status-dropdown-menu-{{issue.pk}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							{{status}}
+						</button>
+						<div id="status-dropdown-items-{{issue.pk}}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+						</div>
+					</div>
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		// generated code to update the status buttons
+		{% for issue in issues %}
+		update_statusbutton('{{projectname}}', '{{issue.pk}}', '{{issue.get_status_display}}');
+		{% endfor %}
+	});
+	function update_this_statusbutton(issueid, status) {
+		update_statusbutton('{{projectname}}', issueid, status);
+	}
+</script>
+
+{% endblock %}

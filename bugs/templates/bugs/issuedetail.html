@@ -1,0 +1,46 @@
+{% extends 'bugs/base.html' %}
+
+{% block customstatic %}
+	{% load static %}
+	<script src="{% static 'bugs/js/util.js' %}"></script>
+{% endblock %}
+
+{% block title %}| {{title}}{% endblock %}
+
+{% block content %}
+
+<h3>{{projectname}}</h3>
+<small><a href="{{projecturl}}">&larr;back to issues</a> </small>
+<hr>
+<h1>
+	{{title}} <span style="color: grey;">#{{id}}</span>
+</h1>
+<div class="dropdown" style="float: right;margin-top:-55px;">
+
+	<button class="btn btn-lg dropdown-toggle" type="button" id="status-dropdown-menu-{{id}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		{{status}}
+	</button>
+	<div id="status-dropdown-items-{{id}}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+	</div>
+</div>
+<p>
+	Priority: {{priority}}
+	{% if tags %}
+		<span style="border-left: thin solid black;margin: 10px;padding-left: 10px;">
+			{% for tag in tags %}
+				<span class="badge badge-info">{{tag}}</span>
+			{% endfor %}
+		</span>
+	{% endif %}
+</p>
+<hr>
+<div>{{body}}</div>
+<hr>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		update_statusbutton('{{projectname}}', '{{id}}', '{{status}}');
+	});
+</script>
+
+{% endblock %}

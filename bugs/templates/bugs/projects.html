@@ -1,0 +1,43 @@
+{% extends 'bugs/base.html' %}
+
+
+{% block content %}
+
+<h1>Projects</h1>
+
+<table class="table table-striped">
+	<thead>
+		<tr>
+			<td><b>Name</b></td>
+			<td><b>Open Issues</b></td>
+		</tr>
+	</thead>
+	<tbody id="projects-tablebody">
+	</tbody>
+</table>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$.ajax({
+			url: '/bugs/api/',
+			type: 'GET',
+			contentType: 'application/json',
+			success: function(data) {
+				console.log(data);
+				var table = document.getElementById('projects-tablebody');
+				data.forEach(project => {
+					let row = table.insertRow();
+					let name = row.insertCell(0);
+					let link = document.createElement('a');
+					link.href = project.url;
+					link.innerHTML = project.name;
+					name.appendChild(link);
+					let issuecount = row.insertCell(1);
+					issuecount.innerHTML = project.open_issues;
+				});
+			}
+		})
+	});
+</script>
+
+{% endblock %}

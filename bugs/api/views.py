@@ -5,8 +5,8 @@ from bugs.models import Project, Issue
 from functools import wraps
 from .serializers import (
     ProjectSerializer,
+    ListIssueSerializer,
     IssueSerializer,
-    CreateIssueSerializer,
 )
 
 
@@ -73,7 +73,7 @@ class IssueListApiView(APIView):
             issues = project.get_issues_by_tags(request.GET["tags"])
         else:
             issues = Issue.objects.filter(project=project)
-        serializer = IssueSerializer(issues, many=True)
+        serializer = ListIssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     def post(self, request, projectname, *args, **kwargs):
@@ -90,7 +90,7 @@ class IssueListApiView(APIView):
             "body": request.data.get("body"),
             "priority": request.data.get("priority") or Issue.priority.field.default,
         }
-        serializer = CreateIssueSerializer(data=data)
+        serializer = IssueSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -126,7 +126,7 @@ class IssueDetailApiView(APIView):
             "tags": request.data.get("tags"),
         }
         data = {k: v for k,v in data.items() if v}
-        serializer = CreateIssueSerializer(issue, data=data, partial=True)
+        serializer = IssueSerializer(issue, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
