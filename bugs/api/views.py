@@ -92,3 +92,53 @@ class IssueListApiView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class IssueDetailApiView(APIView):
+
+    def get(self, request, projectname, issueid, *args, **kwargs):
+        try:
+            issue = Issue.objects.get(pk=issueid)
+        except Issue.DoesNotExist:
+            return Response(
+                {"res": "Object does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        serializer = IssueSerializer(issue)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, projectname, issueid, *args, **kwargs):
+        try:
+            issue = Issue.objects.get(pk=issueid)
+        except Issue.DoesNotExist:
+            return Response(
+                {"res": "Object does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        data = {
+            "title": request.data.get("title"),
+            "body": request.data.get("body"),
+            "priority": request.data.get("priority"),
+            "status": request.data.get("status"),
+        }
+        data = {k: v for k,v in data.items() if v}
+        print(data)
+        serializer = CreateIssueSerializer(issue, data=data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, projectname, issueid, *args, **kwargs):
+        try:
+            issue = Issue.objects.get(pk=issueid)
+        except Issue.DoesNotExist:
+            return Response(
+                {"res": "Object does not exist"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        issue.delete()
+        return Response(
+            {"res": "Object deleted!"},
+            status=status.HTTP_200_OK
+        )

@@ -20,6 +20,19 @@ class IssueSerializer(serializers.ModelSerializer):
 
 
 class CreateIssueSerializer(serializers.ModelSerializer):
+    status = serializers.CharField(source="get_status_display")
+
     class Meta:
         model = Issue
         fields = "__all__"
+
+    def validate_status(self, value):
+        if not hasattr(Issue.Status, value.upper()):
+            raise serializers.ValidationError(f"{value} is not a valid status")
+        return int(getattr(Issue.Status, value.upper()))
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        if "get_status_display" in validated_data:
+            validated_data["status"] = validated_data.pop("get_status_display")
+        return super(CreateIssueSerializer, self).update(instance, validated_data)
