@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from bugs.models import Project, Issue, Tag
+from bugs.models import Project, Issue
 from functools import wraps
 from .serializers import (
     ProjectSerializer,
@@ -120,9 +120,9 @@ class IssueDetailApiView(APIView):
             "body": request.data.get("body"),
             "priority": request.data.get("priority"),
             "status": request.data.get("status"),
+            "tags": request.data.get("tags"),
         }
         data = {k: v for k,v in data.items() if v}
-        print(data)
         serializer = CreateIssueSerializer(issue, data=data, partial=True)
         if serializer.is_valid():
             serializer.save()

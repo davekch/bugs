@@ -31,8 +31,15 @@ class CreateIssueSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(f"{value} is not a valid status")
         return int(getattr(Issue.Status, value.upper()))
 
+    def validate_tags(self, value):
+        if not isinstance(value, str):
+            raise serializers.ValidationError("tags must be strings separated by comma")
+        return [t.strip() for t in value.split(",")]
+
     def update(self, instance, validated_data):
-        print(validated_data)
         if "get_status_display" in validated_data:
             validated_data["status"] = validated_data.pop("get_status_display")
+        if "tags" in validated_data:
+            tags = validated_data.pop("tags")
+            instance.set_tags(tags)
         return super(CreateIssueSerializer, self).update(instance, validated_data)

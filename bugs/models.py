@@ -16,6 +16,7 @@ class Issue(models.Model):
     body = models.TextField(null=True)
     priority = models.IntegerField(default=0)
     created_on = models.DateTimeField(auto_now_add=True)
+    tags = models.CharField(max_length=200, null=True)
 
     class Status(models.IntegerChoices):
         PENDING = 1
@@ -25,7 +26,5 @@ class Issue(models.Model):
 
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
-
-class Tag(models.Model):
-    issue = models.ForeignKey(Issue, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+    def set_tags(self, tags):
+        self.tags = ",".join(tags)
