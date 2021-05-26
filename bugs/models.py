@@ -10,6 +10,12 @@ class Project(models.Model):
             status__in=[Issue.Status.PENDING, Issue.Status.WIP, Issue.Status.WONTFIX]
         ))
 
+    def get_issues_by_tags(self, tags):
+        """returns all issues that have one or more of the given tags"""
+        if isinstance(tags, str):
+            tags = [t.strip() for t in tags.split(",")]
+        return [issue for issue in self.issue_set.all() if any(tag in issue.tags_list() for tag in tags)]
+
 class Issue(models.Model):
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
@@ -28,3 +34,8 @@ class Issue(models.Model):
 
     def set_tags(self, tags):
         self.tags = ",".join(tags)
+
+    def tags_list(self):
+        if self.tags:
+            return self.tags.split(",")
+        return []

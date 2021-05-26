@@ -69,7 +69,10 @@ class IssueListApiView(APIView):
                 {"res": "Project does not exist"},
                 status=status.HTTP_400_BAD_REQUEST
             )
-        issues = Issue.objects.filter(project=project)
+        if "tags" in request.GET:
+            issues = project.get_issues_by_tags(request.GET["tags"])
+        else:
+            issues = Issue.objects.filter(project=project)
         serializer = IssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
