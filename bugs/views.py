@@ -29,5 +29,6 @@ def issue_detail(request, projectname, issueid):
         "status": issue.get_status_display(),
         "tags": issue.tags_list(),
         "id": issue.pk,
+        "issueform": IssueForm(instance=issue),
     }
     return render(request, "bugs/issuedetail.html", context=context)

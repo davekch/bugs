@@ -51,7 +51,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" onclick="this.form.reset()" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="submit" data-dismiss="modal" class="btn btn-primary">Save changes</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
 				</div>
 			</form>
 		</div>
@@ -131,6 +131,7 @@
 					update_statusbutton('{{projectname}}', responsedata.id, responsedata.status);
 					sort_issues_by_prioriry(table);
 					document.getElementById('issueform').reset();
+					$('#issueformmodal').modal('hide');
 				},
 				error: function(responsedata) {
 					console.log("error");
