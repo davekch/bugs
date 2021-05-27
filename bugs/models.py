@@ -10,8 +10,16 @@ class Project(models.Model):
 
     def get_open_issues(self):
         return self.issue_set.filter(
-            status__in=[Issue.Status.PENDING, Issue.Status.WIP, Issue.Status.WONTFIX]
+            status__in=[Issue.Status.PENDING, Issue.Status.WIP]
         )
+
+    def get_closed_issue_count(self):
+        return len(self.get_closed_issues())
+
+    def get_closed_issues(self):
+        return self.issue_set.filter(
+            status__in=[Issue.Status.DONE, Issue.Status.WONTFIX]
+        ).order_by("-created_on")
 
     def get_issues_by_tags(self, tags):
         """returns all issues that have one or more of the given tags"""

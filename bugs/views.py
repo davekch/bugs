@@ -10,7 +10,10 @@ def projects(request):
 def issues(request, projectname):
     project = get_object_or_404(Project, name=projectname)
     context = {
-        "issues": project.get_open_issues(),
+        "open_issues": project.get_open_issues(),
+        "closed_issues": project.get_closed_issues(),
+        "open_issue_count": project.get_open_issue_count(),
+        "closed_issue_count": project.get_closed_issue_count(),
         "projectname": projectname,
         "issueform": IssueForm(),
     }

@@ -3,6 +3,11 @@
 {% block customstatic %}
 	{% load static %}
 	<script src="{% static 'bugs/js/util.js' %}"></script>
+	<style>
+		.table > thead > tr:first-child > td {
+			border: none;
+		}
+	</style>
 {% endblock %}
 
 {% block title %}| {{projectname}}{% endblock %}
@@ -58,45 +63,108 @@
 	</div>
 </div>
 
-<table class="table table-striped">
-	<thead>
-		<tr>
-			<td><b>Title</b></td>
-			<td><b>Priority</b></td>
-			<td><b>Tags</b></td>
-			<td><b>Status</b></td>
-		</tr>
-	</thead>
-	<tbody id="issues-tablebody">
-		{% for issue in issues %}
-			<tr>
-				<td>
-					<a href="{% url 'issuedetails' projectname issue.pk %}">{{issue.title}}</a>
-				</td>
-				<td>{{issue.priority}}</td>
-				<td>
-					{% for tag in issue.tags_list %}
-						<span class="badge badge-info">{{tag}}</span>
-					{% endfor %}
-				</td>
-				<td>
-					<div class="dropdown">
-						<button class="btn btn-sm dropdown-toggle" type="button" id="status-dropdown-menu-{{issue.pk}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							{{status}}
-						</button>
-						<div id="status-dropdown-items-{{issue.pk}}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-						</div>
-					</div>
-				</td>
-			</tr>
-		{% endfor %}
-	</tbody>
-</table>
+<!-- Tab links -->
+<ul class="nav nav-tabs">
+	<li class="nav-item">
+		<a data-toggle="tab" class="nav-link active" href="#openissues">
+			Open ({{open_issue_count}})
+		</a>
+	</li>
+	<li class="nav-item">
+		<a data-toggle="tab" class="nav-link" href="#closedissues">
+			Closed ({{closed_issue_count}})
+		</a>
+	</li>
+</ul>
+
+
+<!-- Tab content -->
+<div class="tab-content">
+
+	<div id="openissues" class="tab-pane fade show active">
+		<table class="table table-striped table-no-border">
+			<thead>
+				<tr>
+					<td><b>Title</b></td>
+					<td><b>Priority</b></td>
+					<td><b>Tags</b></td>
+					<td><b>Status</b></td>
+				</tr>
+			</thead>
+			<tbody id="issues-tablebody">
+				{% for issue in open_issues %}
+					<tr>
+						<td>
+							<a href="{% url 'issuedetails' projectname issue.pk %}">{{issue.title}}</a>
+						</td>
+						<td>{{issue.priority}}</td>
+						<td>
+							{% for tag in issue.tags_list %}
+								<span class="badge badge-info">{{tag}}</span>
+							{% endfor %}
+						</td>
+						<td>
+							<div class="dropdown">
+								<button class="btn btn-sm dropdown-toggle" type="button" id="status-dropdown-menu-{{issue.pk}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									{{status}}
+								</button>
+								<div id="status-dropdown-items-{{issue.pk}}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								</div>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+
+	<div id="closedissues" class="tab-pane fade">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<td><b>Title</b></td>
+					<td><b>Priority</b></td>
+					<td><b>Tags</b></td>
+					<td><b>Status</b></td>
+				</tr>
+			</thead>
+			<tbody id="issues-tablebody">
+				{% for issue in closed_issues %}
+					<tr>
+						<td>
+							<a href="{% url 'issuedetails' projectname issue.pk %}">{{issue.title}}</a>
+						</td>
+						<td>{{issue.priority}}</td>
+						<td>
+							{% for tag in issue.tags_list %}
+								<span class="badge badge-info">{{tag}}</span>
+							{% endfor %}
+						</td>
+						<td>
+							<div class="dropdown">
+								<button class="btn btn-sm dropdown-toggle" type="button" id="status-dropdown-menu-{{issue.pk}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									{{status}}
+								</button>
+								<div id="status-dropdown-items-{{issue.pk}}" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+								</div>
+							</div>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+</div>
+
 
 <script type="text/javascript">
 	$(document).ready(function() {
 		// generated code to update the status buttons
-		{% for issue in issues %}
+		{% for issue in open_issues %}
+		update_statusbutton('{{projectname}}', '{{issue.pk}}', '{{issue.get_status_display}}');
+		{% endfor %}
+		{% for issue in closed_issues %}
 		update_statusbutton('{{projectname}}', '{{issue.pk}}', '{{issue.get_status_display}}');
 		{% endfor %}
 
