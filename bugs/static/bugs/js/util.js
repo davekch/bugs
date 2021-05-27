@@ -77,3 +77,14 @@ function create_tag_badges(tagstring) {
 	}
 	return badges;
 }
+
+function delete_issue(projectname, issueid) {
+	$.ajax({
+		url: `/bugs/api/${projectname}/issues/${issueid}/`,
+		type: 'DELETE',
+		success: function() {
+			// go back and reload
+			location.replace(document.referrer);
+		}
+	});
+}
