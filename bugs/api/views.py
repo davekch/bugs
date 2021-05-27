@@ -89,7 +89,10 @@ class IssueListApiView(APIView):
             "title": request.data.get("title"),
             "body": request.data.get("body"),
             "priority": request.data.get("priority") or Issue.priority.field.default,
+            "tags": request.data.get("tags"),
+            "status": Issue.status.field.default.name,
         }
+        data = {k: v for k,v in data.items() if v}
         serializer = IssueSerializer(data=data)
         if serializer.is_valid():
             serializer.save()

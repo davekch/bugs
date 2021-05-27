@@ -42,9 +42,6 @@ class Issue(models.Model):
     def get_issue_url(self):
         return reverse("issuedetails", args=[self.project.name, self.pk])
 
-    def set_tags(self, tags):
-        self.tags = ",".join(tags)
-
     def tags_list(self):
         if self.tags:
             return self.tags.split(",")
