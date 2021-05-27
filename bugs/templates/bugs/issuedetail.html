@@ -34,7 +34,13 @@
 	{% endif %}
 </p>
 <hr>
-<div>{{body}}</div>
+<div>
+	{% if body %}
+		{{body}}
+	{% else %}
+		<i class="text-muted">no description</i>
+	{% endif %}
+</div>
 <hr>
 
 <script type="text/javascript">
