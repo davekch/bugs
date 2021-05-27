@@ -39,6 +39,9 @@ class Issue(models.Model):
 
     status = models.IntegerField(choices=Status.choices, default=Status.PENDING)
 
+    class Meta:
+        ordering = ["-priority", "-created_on"]
+
     def get_issue_url(self):
         return reverse("issuedetails", args=[self.project.name, self.pk])
 

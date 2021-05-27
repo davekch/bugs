@@ -39,3 +39,38 @@ function set_status(projectname, issueid, status) {
 		}
 	})
 }
+
+function make_status_dropdown(issueid, status) {
+	var dropdown = document.createElement('div');
+	dropdown.className = 'dropdown';
+	var btn = document.createElement('button');
+	btn.className = 'btn btn-sm dropdown-toggle';
+	btn.type = 'button';
+	btn.id = `status-dropdown-menu-${issueid}`;
+	btn.data_toggle = 'dropdown';
+	btn.innerHTML = status;
+	dropdown.appendChild(btn);
+	var dropdownitems = document.createElement('div');
+	dropdownitems.className = 'dropdown-menu';
+	dropdownitems.id = `status-dropdown-items-${issueid}`;
+	dropdown.append(dropdownitems);
+	return dropdown;
+}
+
+function sort_issues_by_prioriry(tablebody) {
+	$(tablebody).find('tr').sort(function (a, b) {
+		return $('td:nth-child(2)', b).text().localeCompare($('td:nth-child(2)', a).text());
+	}).appendTo(tablebody);
+}
+
+function create_tag_badges(tagstring) {
+	var tags = tagstring.split(',');
+	var badges = [];
+	for (let i=0; i<tags.length; i++) {
+		let span = document.createElement('span');
+		span.className = 'badge badge-info';
+		span.innerHTML = tags[i];
+		badges.push(span);
+	}
+	return badges;
+}

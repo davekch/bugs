@@ -18,6 +18,7 @@ class ListIssueSerializer(serializers.ModelSerializer):
     class Meta:
         model = Issue
         fields = ["title", "status", "priority", "tags", "url"]
+        ordering = ["created_on"]
 
 
 class IssueSerializer(serializers.ModelSerializer):
