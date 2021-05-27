@@ -13,6 +13,50 @@
 <small><a href="{% url 'projects' %}">&larr;back to projects</a> </small>
 <hr>
 <h2>Issues</h2>
+<button type="button" class="btn btn-outline-primary" style="float: right;margin-top:-45px;" data-toggle="modal" data-target="#issueformmodal">
+	+
+</button>
+
+<div class="modal fade" id="issueformmodal" tabindex="-1" role="dialog" aria-labelledby="issueformModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="issueformModal">Create a new issue</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form id="issueform" method="POST">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="{{issueform.title.auto_id}}">Title</label>
+						<input type="text" class="form-control form-control-lg" id="{{issueform.title.auto_id}}" maxlength="{{issueform.title.field.max_length}}" required placeholder="Choose a title">
+					</div>
+					<div class="form-group">
+						<label for="{{issueform.body.auto_id}}">Description</label>
+						<textarea class="form-control" id="{{issueform.body.auto_id}}" rows="5" maxlength="{{issueform.body.field.max_length}}" placeholder="Describe the issue ..."></textarea>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="{{issueform.tags.auto_id}}">Tags</label>
+						<div class="col-sm-10">
+							<input type="text" class="form-control" id="{{issueform.tags.auto_id}}" maxlength="{{issueform.tags.field.max_length}}" placeholder="e.g. bug, feature">
+						</div>
+					</div>
+					<div class="form-group row">
+						<label class="col-sm-2 col-form-label" for="{{issueform.priority.auto_id}}">Priority</label>
+						<div class="col-sm-10">
+							<input type="nubmer" step="1" class="form-control" id="{{issueform.priority.auto_id}}" value="0">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 <table class="table table-striped">
 	<thead>
@@ -55,10 +99,31 @@
 		{% for issue in issues %}
 		update_statusbutton('{{projectname}}', '{{issue.pk}}', '{{issue.get_status_display}}');
 		{% endfor %}
+
+		// form submit
+		$("#issueform").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+				url: '/bugs/api/{{projectname}}/issues/',
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					title: $('#{{issueform.title.auto_id}}').val(),
+					body: $('#{{issueform.body.auto_id}}').val(),
+					tags: $('#{{issueform.tags.auto_id}}').val(),
+					priority: $('#{{issueform.priority.auto_id}}').val()
+				},
+				success: function(responsedata) {
+					console.log("success");
+					console.log(responsedata);
+				},
+				error: function(responsedata) {
+					console.log("error");
+					console.log(responsedata);
+				}
+			})
+		});
 	});
-	function update_this_statusbutton(issueid, status) {
-		update_statusbutton('{{projectname}}', issueid, status);
-	}
 </script>
 
 {% endblock %}

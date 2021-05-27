@@ -1,5 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Project, Issue
+from .forms import IssueForm
 
 
 def projects(request):
@@ -11,6 +12,7 @@ def issues(request, projectname):
     context = {
         "issues": project.get_open_issues(),
         "projectname": projectname,
+        "issueform": IssueForm(),
     }
     return render(request, "bugs/projectdetail.html", context=context)
 
