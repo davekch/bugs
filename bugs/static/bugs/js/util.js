@@ -64,6 +64,9 @@ function sort_issues_by_prioriry(tablebody) {
 }
 
 function create_tag_badges(tagstring) {
+	if (!tagstring) {
+		return []
+	}
 	var tags = tagstring.split(',');
 	var badges = [];
 	for (let i=0; i<tags.length; i++) {
