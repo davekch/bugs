@@ -4,6 +4,34 @@
 {% block content %}
 
 <h1>Projects</h1>
+<button type="button" class="btn btn-outline-primary" style="float: right;margin-top:-45px;" data-toggle="modal" data-target="#projectformmodal">
+	+
+</button>
+
+<div class="modal fade" id="projectformmodal" tabindex="-1" role="dialog" aria-labelledby="projectformModal" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Create a new project</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<form id="projectform" method="POST">
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="{{projectform.name.auto_id}}">Name</label>
+						<input type="text" class="form-control form-control-lg" id="{{projectform.name.auto_id}}" maxlength="{{projectform.name.field.max_length}}" required placeholder="Choose a name">
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" onclick="this.form.reset()" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Save changes</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
 <table class="table table-striped">
 	<thead>
@@ -37,6 +65,26 @@
 				});
 			}
 		})
+
+		// form submit
+		$("#projectform").submit(function(event) {
+			event.preventDefault();
+			$.ajax({
+				url: '/bugs/api/',
+				type: 'POST',
+				data: {
+					csrfmiddlewaretoken: '{{ csrf_token }}',
+					name: $('#{{projectform.name.auto_id}}').val(),
+				},
+				success: function(responsedata) {
+					location.href = responsedata.url;
+				},
+				error: function(responsedata) {
+					console.log("error");
+					console.log(responsedata);
+				}
+			});
+		});
 	});
 </script>
 

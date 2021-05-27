@@ -1,10 +1,13 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Project, Issue
-from .forms import IssueForm
+from .forms import IssueForm, ProjectForm
 
 
 def projects(request):
-    return render(request, "bugs/projects.html")
+    context = {
+        "projectform": ProjectForm,
+    }
+    return render(request, "bugs/projects.html", context=context)
 
 
 def issues(request, projectname):

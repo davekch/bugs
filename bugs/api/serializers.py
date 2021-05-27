@@ -3,8 +3,8 @@ from bugs.models import Project, Issue
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    open_issues = serializers.IntegerField(source="get_open_issue_count")
-    url = serializers.URLField(source="get_project_url")
+    open_issues = serializers.IntegerField(source="get_open_issue_count", read_only=True)
+    url = serializers.URLField(source="get_project_url", read_only=True)
 
     class Meta:
         model = Project
