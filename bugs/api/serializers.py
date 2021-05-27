@@ -23,6 +23,7 @@ class ListIssueSerializer(serializers.ModelSerializer):
 
 class IssueSerializer(serializers.ModelSerializer):
     status = serializers.CharField(source="get_status_display")
+    url = serializers.URLField(source="get_issue_url", read_only=True)
 
     class Meta:
         model = Issue
