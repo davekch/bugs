@@ -64,7 +64,7 @@
 					</div>
 					<div class="form-group">
 						<label for="{{issueform.body.auto_id}}">Description</label>
-						<textarea class="form-control" id="{{issueform.body.auto_id}}" rows="5" maxlength="{{issueform.body.field.max_length}}" placeholder="Describe the issue ..." value="{{issueform.body.value}}"></textarea>
+						<textarea class="form-control" id="{{issueform.body.auto_id}}" rows="5" maxlength="{{issueform.body.field.max_length}}" placeholder="Describe the issue ...">{% if issueform.body.value %}{{issueform.body.value}}{% endif %}</textarea>
 					</div>
 					<div class="form-group row">
 						<label class="col-sm-2 col-form-label" for="{{issueform.tags.auto_id}}">Tags</label>
