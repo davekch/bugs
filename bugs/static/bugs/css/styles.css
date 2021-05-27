@@ -1,0 +1,10 @@
+.table > thead > tr:first-child > td {
+	border: none;
+}
+
+pre {
+	background: lightgrey;
+	border-radius: 5px;
+	color: black;
+	padding: 7px;
+}

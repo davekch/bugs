@@ -3,11 +3,13 @@
 {% block customstatic %}
 	{% load static %}
 	<script src="{% static 'bugs/js/util.js' %}"></script>
+	<link rel="stylesheet" href="{% static 'bugs/css/styles.css' %}">
 {% endblock %}
 
 {% block title %}| {{title}}{% endblock %}
 
 {% block content %}
+{% load markdownify %}
 
 <h3>{{projectname}}</h3>
 <small><a href="{{projecturl}}">&larr;back to issues</a> </small>
@@ -36,7 +38,7 @@
 <hr>
 <div>
 	{% if body %}
-		{{body}}
+		{{ body | markdownify | linebreaks }}
 	{% else %}
 		<i class="text-muted">no description</i>
 	{% endif %}

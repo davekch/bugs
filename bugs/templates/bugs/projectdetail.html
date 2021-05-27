@@ -3,11 +3,7 @@
 {% block customstatic %}
 	{% load static %}
 	<script src="{% static 'bugs/js/util.js' %}"></script>
-	<style>
-		.table > thead > tr:first-child > td {
-			border: none;
-		}
-	</style>
+	<link rel="stylesheet" href="{% static 'bugs/css/styles.css' %}">
 {% endblock %}
 
 {% block title %}| {{projectname}}{% endblock %}
