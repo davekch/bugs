@@ -27,5 +27,9 @@ Requirements: `python3.8`, `pipenv`
 git clone https://github.com/davekch/bugs.git
 cd bugs
 pipenv install
+./manage.py migrate
+```
+then run
+```
 ./manage.py runserver <port>
 ```
