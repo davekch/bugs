@@ -39,7 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'markdownify',
+    'markdownify.apps.MarkdownifyConfig',
 ]
 
 MIDDLEWARE = [
@@ -129,6 +129,51 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 # settings for markdownify
-MARKDOWNIFY_MARKDOWN_EXTENSIONS = ['fenced_code']   # allows code blocks between ``` ```
-import bleach
-MARKDOWNIFY_WHITELIST_TAGS = bleach.sanitizer.ALLOWED_TAGS + ['pre']
+MARKDOWNIFY = {
+    "default": {
+        "MARKDOWN_EXTENSIONS": [
+            'markdown.extensions.fenced_code',
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+        ],
+        "WHITELIST_STYLES": [
+            'color',
+            'font-weight',
+        ],
+        "WHITELIST_TAGS": [
+            'code',
+            'pre',
+            'span',
+            'div',
+            'a',
+            'abbr',
+            'acronym',
+            'b',
+            'blockquote',
+            'em',
+            'i',
+            'li',
+            'ol',
+            'p',
+            'strong',
+            'ul',
+            'h1',
+            'h2',
+            'h3',
+            'h4',
+            'h5',
+            'img',
+        ],
+        "WHITELIST_ATTRS": [
+            'class',
+            'href',
+            'src',
+            'alt',
+            ],
+        "WHITELIST_PROTOCOL": [
+            'http',
+            'https',
+        ],
+        "BLEACH": False
+    }
+}

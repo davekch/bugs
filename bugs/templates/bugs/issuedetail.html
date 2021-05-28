@@ -10,6 +10,7 @@
 
 {% block content %}
 {% load markdownify %}
+{% load md_linkify %}
 
 <h3>{{projectname}}</h3>
 <small><a href="{{projecturl}}">&larr;back to issues</a> </small>
@@ -38,7 +39,7 @@
 <hr>
 <div>
 	{% if body %}
-		{{ body | markdownify | linebreaks }}
+		{{ body | markdown_linkify | markdownify }}
 	{% else %}
 		<i class="text-muted">no description</i>
 	{% endif %}
