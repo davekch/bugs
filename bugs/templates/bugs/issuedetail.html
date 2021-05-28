@@ -39,7 +39,7 @@
 <hr>
 <div>
 	{% if body %}
-		{{ body | markdown_linkify | markdownify }}
+		{{ body | markdownify }}
 	{% else %}
 		<i class="text-muted">no description</i>
 	{% endif %}
