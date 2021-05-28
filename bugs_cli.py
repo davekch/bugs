@@ -90,6 +90,9 @@ class BugsCliCLI:
                 "url": "http://127.0.0.1",
                 "port": 8003,
             }
+            self._config["bugs-cli"] = {
+                "pager": 15,
+            }
             with open(config, "w") as c:
                 self._config.write(c)
         else:
@@ -144,7 +147,11 @@ class BugsCliCLI:
                     issue["tags"] or "-",
                     issue["status"],
                 )
-            self._console.print(table)
+            if len(response) > self._config["bugs-cli"].getint("pager"):
+                with self._console.pager(styles=True):
+                    self._console.print(table)
+            else:
+                self._console.print(table)
 
 
 if __name__ == "__main__":
