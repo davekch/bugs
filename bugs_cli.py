@@ -80,21 +80,32 @@ def connection_required(f):
     return _f
 
 
+def make_default_config(config_path):
+    config = ConfigParser()
+    config["host"] = {
+        "url": "http://127.0.0.1",
+        "port": 8003,
+    }
+    config["bugs-cli"] = {
+        "pager": 15,
+    }
+    config["styles"] = {
+        "pending": "red",
+        "wip": "yellow",
+        "done": "green",
+        "wontfix": "dim",
+    }
+    with open(config_path, "w") as c:
+        config.write(c)
+    return config
+
+
 class BugsCliCLI:
     """Command Line Interface for BugsClient"""
 
     def __init__(self, config="bugs.ini"):
         if not os.path.isfile(config):
-            self._config = ConfigParser()
-            self._config["host"] = {
-                "url": "http://127.0.0.1",
-                "port": 8003,
-            }
-            self._config["bugs-cli"] = {
-                "pager": 15,
-            }
-            with open(config, "w") as c:
-                self._config.write(c)
+            self._config = make_default_config(config)
         else:
             self._config = ConfigParser()
             self._config.read(config)
@@ -140,12 +151,14 @@ class BugsCliCLI:
             table.add_column("Tags")
             table.add_column("Status")
             for issue in response:
+                status = issue["status"]
+                statuscolor = self._config["styles"][status.lower()]
                 table.add_row(
                     f'#{issue["id"]}',
                     issue["title"],
                     str(issue["priority"]),
                     issue["tags"] or "-",
-                    issue["status"],
+                    f"[{statuscolor}]{status}[/{statuscolor}]",
                 )
             if len(response) > self._config["bugs-cli"].getint("pager"):
                 with self._console.pager(styles=True):
