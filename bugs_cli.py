@@ -5,6 +5,7 @@ import json
 from rich.console import Console
 from rich.table import Table
 import fire
+from functools import wraps
 
 
 def wrap_errors(response, ok_status=200):
@@ -67,6 +68,18 @@ class BugsClient:
         return wrap_errors(response)
 
 
+def connection_required(f):
+    @wraps(f)
+    def _f(self, *args, **kwargs):
+        try:
+            return f(self, *args, **kwargs)
+        except requests.exceptions.ConnectionError:
+            self._console.print("Error: No connection to bugs-server", style="bold red")
+            self._console.print("Please check if bugs-server is running and bugs-cli is properly configured.")
+
+    return _f
+
+
 class BugsCliCLI:
     """Command Line Interface for BugsClient"""
 
@@ -97,7 +110,7 @@ class BugsCliCLI:
             table.add_row(f"[bold]error: ", description)
         self._console.print(table)
 
-
+    @connection_required
     def create(self, projectname: str):
         """create a new project"""
         response = self._client.create_project(projectname)
@@ -106,6 +119,7 @@ class BugsCliCLI:
         else:
             self._console.print(f":heavy_check_mark: Created new project: {response['name']}")
 
+    @connection_required
     def ls(self, projectname: str, closed: bool=False):
         """list issues in project"""
         response = self._client.list_issues(projectname)
