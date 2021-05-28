@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 djangorestframework = "*"
 django-markdownify = "*"
+rich = "*"
 
 [dev-packages]
 bpython = "*"
