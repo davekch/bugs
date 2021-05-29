@@ -134,6 +134,29 @@ class BugsCliCLI:
             self._console.print(f":heavy_check_mark: Created new project: {response['name']}")
 
     @connection_required
+    def projects(self):
+        """list all projects"""
+        response = self._client.list_projects()
+        if "errors" in response:
+            self._print_errors(response["errors"])
+        else:
+            if not response:
+                self._console.print("There are no projects.", style="italic")
+                return
+
+            table = Table(title="Projects", expand=True)
+            table.add_column("Name", style="bold")
+            table.add_column("Open issues")
+            for project in response:
+                table.add_row(project["name"], str(project["open_issues"]))
+
+            if len(response) > self._config["bugs-cli"].getint("pager"):
+                with self._console.pager(styles=True):
+                    self._console.print(table)
+            else:
+                self._console.print(table)
+
+    @connection_required
     def ls(self, projectname: str, closed: bool=False):
         """list issues in project"""
         response = self._client.list_issues(projectname)
