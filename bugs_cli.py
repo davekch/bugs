@@ -68,7 +68,7 @@ class BugsClient:
         }
         data = {k: v for k,v in data.items() if v}
         response = requests.put(f"{self.baseurl}{projectname}/issues/{issueid}/", data)
-        return wrap_errors(response, ok_status=201)
+        return wrap_errors(response)
 
     def delete_issue(self, projectname: str, issueid: int) -> dict:
         response = request.delete(f"{self.baserurl}{projectname}/issues/{issueid}")
