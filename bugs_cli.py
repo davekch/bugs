@@ -151,7 +151,7 @@ class BugsCliCLI:
         if "errors" in response:
             self._print_errors(response["errors"])
         else:
-            self._console.print(f":heavy_check_mark: Created new project: {response['name']}")
+            self._console.print(f"[green]:heavy_check_mark:[/green] Created new project: {response['name']}")
 
     @connection_required
     def projects(self):
@@ -238,6 +238,24 @@ class BugsCliCLI:
             self._console.print(f"Priority: {response['priority']}")
             self._console.print(f"Tags: {response['tags'] or '-'}")
             self._console.print(Panel(Markdown(response["body"])))
+
+    @connection_required
+    def mark(self, issueid: int, status: str, projectname: str=None):
+        """set the status for an issue.
+        If no projectname is given, the name of the project will be taken from
+        the environment variable BUGSPROJECT or, if not set, the current directory name.
+        """
+        if not projectname:
+            projectname = self._guess_projectname()
+        response = self._client.edit_issue(projectname, issueid, status=status)
+        if "errors" in response:
+            self._print_errors(response["errors"])
+            return
+
+        status = response["status"]
+        statuscolor = self._config["styles"][status.lower()]
+        self._console.print(f"[green]:heavy_check_mark:[/green] Set the status of '{response['title']}' to [{statuscolor}]{status}[/{statuscolor}]")
+
 
 
 if __name__ == "__main__":
