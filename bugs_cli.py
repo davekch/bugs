@@ -128,7 +128,7 @@ class BugsCliCLI:
         for error, description in errors.items():
             if isinstance(description, list):
                 description = "\n".join(description)
-            table.add_row(f"[bold]error: ", description)
+            table.add_row(f"[bold]error:[/bold] ", str(description))
         self._console.print(table)
 
     def _guess_projectname(self):
