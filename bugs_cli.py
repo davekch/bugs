@@ -4,8 +4,11 @@ import requests
 import json
 from rich.console import Console
 from rich.table import Table
+from rich.panel import Panel
+from rich.markdown import Markdown
 import fire
 from functools import wraps
+from contextlib import ExitStack
 
 
 def wrap_errors(response, ok_status=200):
@@ -38,6 +41,10 @@ class BugsClient:
 
     def list_issues(self, projectname: str) -> list:
         response = requests.get(f"{self.baseurl}{projectname}/issues/")
+        return wrap_errors(response)
+
+    def get_issue(self, projectname: str, issueid: int) -> dict:
+        response = requests.get(f"{self.baseurl}{projectname}/issues/{issueid}")
         return wrap_errors(response)
 
     def create_issue(self, projectname: str, title: str, body: str=None, priority: int=0, tags: str=None) -> dict:
@@ -188,6 +195,26 @@ class BugsCliCLI:
                     self._console.print(table)
             else:
                 self._console.print(table)
+
+    @connection_required
+    def show(self, projectname: str, issueid: int, nopager: bool=False):
+        """show details of an issue"""
+        response = self._client.get_issue(projectname, issueid)
+        if "errors" in response:
+            self._print_errors(response["errors"])
+            return
+
+        # make pager optional
+        with ExitStack() as stack:
+            if not nopager:
+                stack.enter_context(self._console.pager(styles=True))
+            self._console.print(response["title"], style="underline bold")
+            status = response["status"]
+            statuscolor = self._config["styles"][status.lower()]
+            self._console.print(f"Status: [{statuscolor}]{status}[/{statuscolor}]")
+            self._console.print(f"Priority: {response['priority']}")
+            self._console.print(f"Tags: {response['tags'] or '-'}")
+            self._console.print(Panel(Markdown(response["body"])))
 
 
 if __name__ == "__main__":
