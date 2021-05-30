@@ -131,9 +131,22 @@ class BugsCliCLI:
             table.add_row(f"[bold]error: ", description)
         self._console.print(table)
 
+    def _guess_projectname(self):
+        if projectname := os.environ.get("BUGSPROJECT"):
+            self._console.print("[i]Note:[/i] No projectname was given, so I'm using projectname from the environment variable BUGSPROJECT")
+            return projectname
+        else:
+            self._console.print("[i]Note:[/i] No projectname was given, so I'm using the current directory as projectname")
+            return os.path.basename(os.getcwd())
+
     @connection_required
-    def create(self, projectname: str):
-        """create a new project"""
+    def create(self, projectname: str=None):
+        """create a new project.
+        If no projectname is given, the name of the project will be taken from
+        the environment variable BUGSPROJECT or, if not set, the current directory name.
+        """
+        if not projectname:
+            projectname = self._guess_projectname()
         response = self._client.create_project(projectname)
         if "errors" in response:
             self._print_errors(response["errors"])
@@ -164,8 +177,13 @@ class BugsCliCLI:
                 self._console.print(table)
 
     @connection_required
-    def ls(self, projectname: str, closed: bool=False):
-        """list issues in project"""
+    def ls(self, projectname: str=None, closed: bool=False):
+        """list issues in project.
+        If no projectname is given, the name of the project will be taken from
+        the environment variable BUGSPROJECT or, if not set, the current directory name.
+        """
+        if not projectname:
+            projectname = self._guess_projectname()
         response = self._client.list_issues(projectname)
         if "errors" in response:
             self._print_errors(response["errors"])
@@ -197,8 +215,13 @@ class BugsCliCLI:
                 self._console.print(table)
 
     @connection_required
-    def show(self, projectname: str, issueid: int, nopager: bool=False):
-        """show details of an issue"""
+    def show(self, issueid: int, projectname: str=None, nopager: bool=False):
+        """show details of an issue.
+        If no projectname is given, the name of the project will be taken from
+        the environment variable BUGSPROJECT or, if not set, the current directory name.
+        """
+        if not projectname:
+            projectname = self._guess_projectname()
         response = self._client.get_issue(projectname, issueid)
         if "errors" in response:
             self._print_errors(response["errors"])
