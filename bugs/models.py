@@ -21,11 +21,14 @@ class Project(models.Model):
             status__in=[Issue.Status.DONE, Issue.Status.WONTFIX]
         ).order_by("-created_on")
 
-    def get_issues_by_tags(self, tags):
+    def get_issues_by_tags(self, tags, closed=False):
         """returns all issues that have one or more of the given tags"""
         if isinstance(tags, str):
             tags = [t.strip() for t in tags.split(",")]
-        return [issue for issue in self.issue_set.all() if any(tag in issue.tags_list() for tag in tags)]
+        if closed:
+            return [issue for issue in self.get_closed_issues() if any(tag in issue.tags_list() for tag in tags)]
+        else:
+            return [issue for issue in self.get_open_issues() if any(tag in issue.tags_list() for tag in tags)]
 
     def get_project_url(self):
         return reverse("projectdetails", args=[self.name])

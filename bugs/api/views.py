@@ -70,9 +70,12 @@ class IssueListApiView(APIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         if "tags" in request.GET:
-            issues = project.get_issues_by_tags(request.GET["tags"])
+            issues = project.get_issues_by_tags(request.GET["tags"], ("closed" in request.GET))
         else:
-            issues = Issue.objects.filter(project=project)
+            if "closed" in request.GET:
+                issues = project.get_closed_issues()
+            else:
+                issues = project.get_open_issues()
         serializer = ListIssueSerializer(issues, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
