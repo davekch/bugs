@@ -110,10 +110,13 @@ def make_default_config(config_path):
     return config
 
 
+CONFIG_DIR = os.path.join(os.path.expanduser("~"), ".config", "bugs.ini")
+
+
 class BugsCliCLI:
     """Command Line Interface for BugsClient"""
 
-    def __init__(self, config="bugs.ini"):
+    def __init__(self, config=CONFIG_DIR):
         if not os.path.isfile(config):
             self._config = make_default_config(config)
         else:
