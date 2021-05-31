@@ -2,3 +2,4 @@
 *.pyc
 db.sqlite3
 Pipfile.lock
+bugtrack/settings/productionsettings.ini

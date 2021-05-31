@@ -29,7 +29,9 @@ cd bugs
 pipenv install
 ./manage.py migrate
 ```
-then run
+In development, run
 ```
+export DJANGO_ENVIRONMENT=development
 ./manage.py runserver <port>
 ```
+In production, run `./manage.py runserver` to create a config file at `bugtrack/settings/productionsettings.ini`. Edit the section server[allowed] to set the allowed hosts.
