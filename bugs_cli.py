@@ -39,8 +39,11 @@ class BugsClient:
         response = requests.get(self.baseurl)
         return wrap_errors(response)
 
-    def list_issues(self, projectname: str) -> list:
-        response = requests.get(f"{self.baseurl}{projectname}/issues/")
+    def list_issues(self, projectname: str, query: str="") -> list:
+        url = f"{self.baseurl}{projectname}/issues/"
+        if query:
+            url += "?" + query
+        response = requests.get(url)
         return wrap_errors(response)
 
     def get_issue(self, projectname: str, issueid: int) -> dict:
@@ -177,14 +180,16 @@ class BugsCliCLI:
                 self._console.print(table)
 
     @connection_required
-    def ls(self, projectname: str=None, closed: bool=False):
+    def ls(self, projectname: str=None, query: str="", closed: bool=False):
         """list issues in project.
         If no projectname is given, the name of the project will be taken from
         the environment variable BUGSPROJECT or, if not set, the current directory name.
         """
         if not projectname:
             projectname = self._guess_projectname()
-        response = self._client.list_issues(projectname)
+        if closed:
+            query += "&closed"
+        response = self._client.list_issues(projectname, query=query)
         if "errors" in response:
             self._print_errors(response["errors"])
         else:
