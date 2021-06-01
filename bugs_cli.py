@@ -245,7 +245,7 @@ class BugsCliCLI:
             self._console.print(f"Status: [{statuscolor}]{status}[/{statuscolor}]")
             self._console.print(f"Priority: {response['priority']}")
             self._console.print(f"Tags: {response['tags'] or '-'}")
-            self._console.print(Panel(Markdown(response["body"])))
+            self._console.print(Panel(Markdown(response["body"] or "*no description*")))
 
     @connection_required
     def mark(self, issueid: int, status: str, projectname: str=None):
