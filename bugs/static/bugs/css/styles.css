@@ -8,3 +8,7 @@ pre {
 	color: black;
 	padding: 7px;
 }
+
+textarea {
+  font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;
+}
